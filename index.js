@@ -7,11 +7,10 @@ var browsersList = {};
 
 
 var BenchmarkJasmineReporter = function(baseReporterDecorator, config, logger, helper, formatError) {
-  var reporterConfig = config.jasminebenchmarkReporter || {};
+  var reporterConfig = config.benchmarkjasmineReporter || {};
   var outputFile = helper.normalizeWinPath(path.resolve(config.basePath, reporterConfig.outputFile
       || 'test-results.json'));
 
-  
   baseReporterDecorator(this);
 
   
