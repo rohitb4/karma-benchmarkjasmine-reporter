@@ -1,0 +1,9 @@
+{
+  "name": "karma-benchmarkjasmine-reporter",
+  "description": "A karma reporter for jasmine-benchamrk specs",
+  "version": "0.0.1",
+  "main": "index.js",
+  "devDependencies": {
+    "colors": "~0.6.2"
+  }
+}
