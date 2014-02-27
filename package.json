@@ -1,10 +1,11 @@
 {
   "name": "karma-benchmarkjasmine-reporter",
   "description": "A karma reporter for karma-benchmarkjasmine",
-  "version": "0.0.4",
+  "version": "0.0.7",
   "main": "index.js",
   "dependencies": {
-    "colors": "~0.6.2"
+    "colors": "~0.6.2",
+    "cli-table": "~0.3.0"
   },
   "repository": {
     "type": "git",

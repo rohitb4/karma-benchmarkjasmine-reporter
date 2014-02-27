@@ -4,12 +4,18 @@ var fs = require('fs');
 var colors = require('colors');
 var resultObj = {};
 var browsersList = {};
+var Table = require('cli-table');
 
 
 var BenchmarkJasmineReporter = function(baseReporterDecorator, config, logger, helper, formatError) {
   var reporterConfig = config.benchmarkjasmineReporter || {};
-  var outputFile = helper.normalizeWinPath(path.resolve(config.basePath, reporterConfig.outputFile
-      || 'test-results.json'));
+  var outputFile,
+  browserListFile;
+
+  var outputFolder  = helper.normalizeWinPath(path.resolve(config.basePath, reporterConfig.outputFolder));
+
+  outputFile = outputFolder ? outputFolder + '/test-results.json' : 'test-results.json';
+  browserListFile = outputFolder ? outputFolder + '/browser-list.json' : 'browser-list.json';
 
   baseReporterDecorator(this);
 
@@ -33,23 +39,21 @@ var BenchmarkJasmineReporter = function(baseReporterDecorator, config, logger, h
             suiteHeader = suite + spec;
 
         console.log(suiteHeader.cyan);
-        console.log('-------------------------------------------------------------------------------------\n'+
-          'Test case                               Time taken(s)                       op/sec         \n'.yellow+
-          '-------------------------------------------------------------------------------------');
+        var table = new Table({
+          head:['Browser name', 'Time taken in sec', 'Operations/sec'],
+          colWidths: [50,25,25]
+        });
         for(var browser in specResult) {
           var browserSpecResult = specResult[browser];
-          specResultMessage = browsersList[browser].name + '              ' + browserSpecResult.time+ '          ' + browserSpecResult.hz;
-          if (browserSpecResult.success){
-            console.log(specResultMessage.green);
-          }
-          else {
-            console.log(specResultMessage.red);
-          }
+          table.push([browsersList[browser].name, browserSpecResult.time, browserSpecResult.hz]);
         }
-        console.log('-------------------------------------------------------------------------------------\n')
+        console.log(table.toString());
       }
     }
-    fs.writeFileSync(outputFile, JSON.stringify(resultObj, null, 4))
+    helper.mkdirIfNotExists(path.dirname(outputFile), function() {
+      fs.writeFileSync(outputFile, JSON.stringify(resultObj, null, 4));
+      fs.writeFileSync(browserListFile, JSON.stringify(browsersList, null, 4));
+    });
   };
 
   this.specSuccess = this.specSkipped = this.specFailure = function(browser, result) {
